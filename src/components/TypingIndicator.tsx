@@ -1,14 +1,14 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, Transition } from "framer-motion"
 
 export default function TypingIndicator() {
-  const bounceTransition = {
+  const bounceTransition: { y: Transition } = {
     y: {
       duration: 0.4,
-      repeat: Number.POSITIVE_INFINITY,
-      repeatType: "reverse" as const,
-      ease: "easeOut",
+      repeat: Infinity,
+      repeatType: "reverse",
+      ease: "easeOut", // This is now typed correctly
     },
   }
 
