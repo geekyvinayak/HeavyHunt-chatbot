@@ -134,7 +134,7 @@ PREVIOUS CHAT CONTEXT: ${history || "No previous conversation"}
     let parsedResponse = null;
     try {
       // Remove markdown code blocks if present
-      let cleanResponse = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const cleanResponse = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       parsedResponse = JSON.parse(cleanResponse);
       agentMessage = parsedResponse.message || response;
 
