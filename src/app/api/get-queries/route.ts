@@ -21,7 +21,11 @@ export async function GET(request: NextRequest) {
     const lastKey = searchParams.get('lastKey');
 
     // Prepare the scan command
-    const scanParams: any = {
+    const scanParams: {
+      TableName: string;
+      Limit?: number;
+      ExclusiveStartKey?: Record<string, any>;
+    } = {
       TableName: process.env.DYNAMODB_TABLE_NAME || 'UsersQueries',
     };
 
@@ -34,7 +38,7 @@ export async function GET(request: NextRequest) {
     if (lastKey) {
       try {
         scanParams.ExclusiveStartKey = JSON.parse(decodeURIComponent(lastKey));
-      } catch (error) {
+      } catch {
         return NextResponse.json(
           { error: "Invalid lastKey parameter" },
           { status: 400 }
@@ -56,10 +60,17 @@ export async function GET(request: NextRequest) {
     console.log(`Retrieved ${sortedItems.length} queries from DynamoDB (sorted by date)`);
 
     // Prepare response
-    const response: any = {
+    const response: {
+      success: boolean;
+      data: any[];
+      count: number;
+      lastKey?: string;
+      hasMore: boolean;
+    } = {
       success: true,
       data: sortedItems,
       count: sortedItems.length,
+      hasMore: false,
     };
 
     // Add pagination info if available
@@ -90,13 +101,19 @@ export async function POST(request: NextRequest) {
   try {
     const { email, startDate, endDate, limit } = await request.json();
 
-    const scanParams: any = {
+    const scanParams: {
+      TableName: string;
+      FilterExpression?: string;
+      ExpressionAttributeValues?: Record<string, any>;
+      ExpressionAttributeNames?: Record<string, string>;
+      Limit?: number;
+    } = {
       TableName: process.env.DYNAMODB_TABLE_NAME || 'UsersQueries',
     };
 
     // Add filters if provided
     const filterExpressions: string[] = [];
-    const expressionAttributeValues: any = {};
+    const expressionAttributeValues: Record<string, any> = {};
 
     if (email) {
       filterExpressions.push('user_email = :email');
