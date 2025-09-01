@@ -22,7 +22,8 @@ export function useChat() {
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState<Message[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`)
+  const [sessionId, setSessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`)
+  const [isChatCompleted, setIsChatCompleted] = useState(false)
   
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
@@ -58,6 +59,16 @@ export function useChat() {
     } catch (error) {
       console.error('Error saving query:', error)
     }
+  }
+
+  // Function to start a new chat
+  const startNewChat = () => {
+    setMessages([])
+    setInput('')
+    setIsChatCompleted(false)
+    setIsLoading(false)
+    setSessionId(`session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`)
+    inputRef.current?.focus()
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -116,8 +127,9 @@ export function useChat() {
           // }
           // setMessages(prev => [...prev, summaryMessage])
 
-          // Save to database instead of alert
+          // Save to database and mark chat as completed
           saveQueryToDatabase(data.userEmail!, data.summary!)
+          setIsChatCompleted(true)
         }, 1000)
       }
 
@@ -148,5 +160,7 @@ export function useChat() {
     messagesContainerRef,
     inputRef,
     handleSubmit,
+    isChatCompleted,
+    startNewChat,
   }
 }
