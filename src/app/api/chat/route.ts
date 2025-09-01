@@ -75,6 +75,7 @@ Response format (strict JSON only):
   "isQueryCompleted": <true/false>,
   "summary": <null OR detailed description of all gathered requirements>,
   "unServicable": <true/false>
+  "userEmail": <null OR user-provided email>
 }
 
 ### Example Flows:
@@ -84,7 +85,8 @@ Bot: {
   "message": "Got it 👍 You're looking for a bulldozer. Thanks for clarifying! Would you prefer it new or used? For example: 'brand new' or 'second-hand'.",
   "isQueryCompleted": false,
   "summary": null,
-  "unServicable": false
+  "unServicable": false,
+  "userEmail": null,
 }
 
 - User: "anyone which costs less"  
@@ -93,6 +95,7 @@ Bot: {
   "isQueryCompleted": false,
   "summary": null,
   "unServicable": false
+  "userEmail": null,
 }
 
 - User: "2GB"  
@@ -100,7 +103,8 @@ Bot: {
   "message": "I think there's a small mix-up 🙂. Could you tell me the delivery timeline instead? For example: '2 weeks', '1 month', or 'ASAP'.",
   "isQueryCompleted": false,
   "summary": null,
-  "unServicable": false
+  "unServicable": false,
+  "userEmail": null,
 }
 
 - User: "15 dollars"  
@@ -108,7 +112,8 @@ Bot: {
   "message": "Hmm, $15 seems a bit too low for heavy machinery 🙂. Most clients share budgets in thousands or lakhs. For example: '$50,000', '20 lakhs', or '₹35 lakh'. Could you share your expected budget?",
   "isQueryCompleted": false,
   "summary": null,
-  "unServicable": false
+  "unServicable": false,
+  "userEmail": null,
 }
 
 - Completed:  
@@ -116,7 +121,8 @@ Bot: {
   "message": "Thank you for providing all the details. Our team will contact you soon.",
   "isQueryCompleted": true,
   "summary": "The client is looking for a used bulldozer, sourced locally. They require delivery within 2 weeks and have set a budget of ₹35 lakh. Contact details: xyz@gmail.com, +9198xxxxxxx. Additional notes: prefers cost-effective option and immediate availability.",
-  "unServicable": false
+  "unServicable": false,
+  "userEmail": "xyz@gmail.com",
 }
 
 USER MESSAGE: ${message}
@@ -157,7 +163,8 @@ PREVIOUS CHAT CONTEXT: ${history || "No previous conversation"}
       ...(parsedResponse && {
         isQueryCompleted: parsedResponse.isQueryCompleted,
         summary: parsedResponse.summary,
-        unServicable: parsedResponse.unServicable
+        unServicable: parsedResponse.unServicable,
+        userEmail: parsedResponse.userEmail
       })
     });
   } catch (error) {

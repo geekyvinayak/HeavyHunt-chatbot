@@ -15,6 +15,7 @@ interface ChatResponse {
   isQueryCompleted?: boolean
   summary?: string
   unServicable?: boolean
+  userEmail?: string
 }
 
 export function useChat() {
@@ -34,6 +35,30 @@ export function useChat() {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Function to save query to database
+  const saveQueryToDatabase = async (email: string, summary: string) => {
+    try {
+      const response = await fetch('/api/save-query', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_email: email,
+          querySummary: summary,
+        }),
+      })
+
+      if (response.ok) {
+        console.log('Query saved successfully to database')
+      } else {
+        console.error('Failed to save query to database')
+      }
+    } catch (error) {
+      console.error('Error saving query:', error)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -80,20 +105,20 @@ export function useChat() {
       setMessages(prev => [...prev, botMessage])
 
       // Handle completion or unserviceable requests
-      if (data.isQueryCompleted && data.summary) {
+      if (data.isQueryCompleted && data.summary && data.userEmail) {
         setTimeout(() => {
-          const summaryMessage: Message = {
-            id: (Date.now() + 2).toString(),
-            content: `📋 **Summary of your request:**\n${data.summary}`,
-            sender: 'bot',
-            isUser: false,
-            timestamp: new Date(),
-          }
-          setMessages(prev => [...prev, summaryMessage])
+          // const summaryMessage: Message = {
+          //   id: (Date.now() + 2).toString(),
+          //   content: `📋 **Summary of your request:**\n${data.summary}`,
+          //   sender: 'bot',
+          //   isUser: false,
+          //   timestamp: new Date(),
+          // }
+          // setMessages(prev => [...prev, summaryMessage])
+
+          // Save to database instead of alert
+          saveQueryToDatabase(data.userEmail!, data.summary!)
         }, 1000)
-        setTimeout(() => {
-         alert("we will make api call and save this quote")
-        }, 2000)
       }
 
     } catch (error) {
