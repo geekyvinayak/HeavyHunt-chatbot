@@ -24,21 +24,36 @@ export default function FeatureCard({ icon, title, description, onClick }: Featu
     <motion.div
       whileHover={{
         y: -5,
-        boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-        scale: 1.02,
+        scale: 1.03,
+        boxShadow: "0 0 25px rgba(253, 200, 32, 0.35)",
       }}
-      whileTap={{ scale: 0.98 }}
+      whileTap={{ scale: 0.97 }}
       onClick={onClick}
-      className="bg-gray-50 p-4 rounded-lg text-center cursor-pointer transition-all"
+      className="group relative bg-white/5 border border-gray-700/40 backdrop-blur-xl p-2 rounded-2xl text-center cursor-pointer transition-all duration-300"
     >
+      {/* Icon wrapper */}
       <motion.div
-        className="w-12 h-12 mx-auto mb-3 rounded-full bg-emerald-100 flex items-center justify-center"
+        className="w-14 h-14 mx-auto mb-4 bg-[#242424] rounded-full flex items-center justify-center transition-all duration-300  "
         whileHover={{ rotate: 5 }}
       >
-        <Icon className="w-6 h-6 text-black" />
+       <Icon
+  className="w-8 h-8 text-gray-400  transition-colors duration-300 group-hover:text-yellow-400  "
+/>
+
       </motion.div>
-      <h3 className="font-semibold mb-1">{title}</h3>
-      <p className="text-sm text-gray-600">{description}</p>
+
+      {/* Title */}
+      <h3
+        className="font-semibold mb-2 text-gray-300 transition-all duration-300 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-yellow-400 group-hover:to-yellow-200"
+      >
+        {title}
+      </h3>
+
+      {/* Description */}
+      <p className="text-sm text-gray-500">{description}</p>
+
+      {/* Glow overlay effect */}
+      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-br from-yellow-400/10 via-yellow-500/5 to-transparent blur-xl pointer-events-none" />
     </motion.div>
   )
 }

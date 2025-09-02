@@ -87,28 +87,42 @@ export default function ChatInterface() {
   ];
 
   return (
-    <div className="flex items-center p-2 justify-center h-screen bg-white text-black chatbot-container">
+    <div className="flex items-center p-2 justify-center h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white chatbot-container relative overflow-hidden">
+      {/* Static background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl" style={{backgroundColor: '#fdc820', opacity: 0.03}}></div>
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-white/2 rounded-full blur-3xl"></div>
+        <div className="absolute top-3/4 left-3/4 w-64 h-64 rounded-full blur-3xl" style={{backgroundColor: '#fdc820', opacity: 0.03}}></div>
+      </div>
+
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-6xl p-6 rounded-xl h-full justify-between flex flex-col shadow-lg"
+        className="w-full max-w-6xl p-6 rounded-2xl h-full justify-between flex flex-col backdrop-blur-xl bg-white/5 border border-gray-700/50 shadow-2xl relative z-10"
+        style={{borderColor: 'rgba(253, 200, 32, 0.2)'}}
       >
         <div className="flex flex-col items-center mb-8">
           <motion.div
             initial={{ y: -50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="mb-2"
+            className="mb-2 p-4 rounded-2xl bg-gradient-to-br from-white/8 to-black/20 backdrop-blur-sm border-2 shadow-xl"
+            style={{borderColor: '#fdc820'}}
           >
-            <Image src="/heavyhuntlogo.webp" alt="Logo" width={100} height={100} />
+            <Image src="/heavyhuntlogo.webp" alt="Logo" width={200} height={200} className="drop-shadow-2xl" />
           </motion.div>
 
           <motion.h1
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.5 }}
-            className="text-3xl font-bold text-center"
+            className="text-4xl font-bold text-center bg-gradient-to-r from-white via-gray-200 bg-clip-text text-transparent drop-shadow-lg"
+            style={{
+              background: `linear-gradient(135deg, #ffffff 0%, #fdc820 50%, #ffffff 100%)`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}
           >
             How can I help you find heavy machinery today?
           </motion.h1>
@@ -117,7 +131,7 @@ export default function ChatInterface() {
             initial={{ y: -10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.5 }}
-            className="text-gray-600 text-center mt-2 max-w-md"
+            className="text-gray-300 text-center mt-2 max-w-md text-lg font-medium"
           >
             Tell me what type of heavy machinery you need or select an option below.
           </motion.p>
@@ -135,7 +149,7 @@ export default function ChatInterface() {
                   duration: 0.5,
                   staggerChildren: 0.1,
                 }}
-                className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"
+                className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
               >
                 {featureCards.map((card, index) => (
                   <motion.div
@@ -163,7 +177,8 @@ export default function ChatInterface() {
                   duration: 0.5,
                   height: { type: "spring", stiffness: 100, damping: 15 },
                 }}
-                className="bg-gray-50 rounded-lg flex-1 p-4 mb-4 h-full overflow-y-auto border-2 border-gray-200"
+                className="backdrop-blur-xl bg-white/8 rounded-2xl flex-1 p-6 mb-4 h-full overflow-y-auto border shadow-inner"
+                style={{borderColor: 'rgba(253, 200, 32, 0.3)'}}
                 ref={messagesContainerRef}
               >
                 <AnimatePresence>
@@ -188,10 +203,14 @@ export default function ChatInterface() {
             className="flex justify-center"
           >
             <motion.button
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(253, 200, 32, 0.4)' }}
               whileTap={{ scale: 0.95 }}
               onClick={startNewChat}
-              className="px-8 py-3 rounded-full bg-gradient-to-r from-[#8360c3] to-[#2ebf91] text-white font-medium shadow-lg"
+              className="px-8 py-4 rounded-2xl text-black font-bold shadow-2xl border-2 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl"
+              style={{
+                background: `linear-gradient(135deg, #fdc820 0%, #ffdd44 100%)`,
+                borderColor: '#fdc820'
+              }}
             >
               🔄 Start New Chat
             </motion.button>
@@ -204,7 +223,7 @@ export default function ChatInterface() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.8, duration: 0.5 }}
             onSubmit={handleSubmit}
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-4"
           >
             <div className="relative flex-1">
               <input
@@ -213,17 +232,41 @@ export default function ChatInterface() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask me about heavy machinery..."
-                className="w-full px-4 py-3 pr-10 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                className="w-full px-6 py-4 pr-12 rounded-2xl border-2 bg-white/5 backdrop-blur-xl text-white placeholder-gray-400 focus:outline-none shadow-lg transition-all duration-300 focus:shadow-xl"
+                style={{
+                  borderColor: 'rgba(253, 200, 32, 0.3)',
+                  '&:focus': {
+                    borderColor: '#fdc820',
+                    boxShadow: '0 0 20px rgba(253, 200, 32, 0.2)'
+                  }
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#fdc820';
+                  e.target.style.boxShadow = '0 0 20px rgba(253, 200, 32, 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = 'rgba(253, 200, 32, 0.3)';
+                  e.target.style.boxShadow = 'none';
+                }}
               />
             </div>
             <motion.button
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ 
+                scale: 1.05,
+                boxShadow: '0 0 25px rgba(253, 200, 32, 0.4)'
+              }}
               whileTap={{ scale: 0.95 }}
               type="submit"
               disabled={isLoading || !input.trim()}
-              className="p-3 rounded-full bg-black text-white disabled:opacity-50"
+              className="p-4 rounded-2xl text-black font-bold disabled:opacity-40 shadow-2xl border-2 transition-all duration-300 disabled:cursor-not-allowed"
+              style={{
+                background: isLoading || !input.trim() 
+                  ? 'linear-gradient(135deg, #666 0%, #888 100%)'
+                  : `linear-gradient(135deg, #fdc820 0%, #ffdd44 100%)`,
+                borderColor: isLoading || !input.trim() ? '#666' : '#fdc820'
+              }}
             >
-              {isLoading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
+              {isLoading ? <Loader2 size={24} className="animate-spin" /> : <Send size={24} />}
             </motion.button>
           </motion.form>
         )}

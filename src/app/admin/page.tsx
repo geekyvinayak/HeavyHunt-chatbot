@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2, Search, RefreshCw, Download } from 'lucide-react';
+import Image from 'next/image';
 
 interface QueryData {
   id: string;
@@ -127,9 +128,7 @@ export default function AdminPage() {
         {/* Header */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-              🏗️ HeavyHunt Admin Dashboard
-            </CardTitle>
+           <Image src="/heavyhuntlogo.webp" alt="Logo" width={200} height={200} className="drop-shadow-2xl" />
             <p className="text-gray-600">Manage and view all user queries</p>
           </CardHeader>
         </Card>
