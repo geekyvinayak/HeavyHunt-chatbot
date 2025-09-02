@@ -227,28 +227,21 @@ export default function ChatInterface() {
           >
             <div className="relative flex-1">
               <input
-                ref={inputRef}
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask me about heavy machinery..."
-                className="w-full px-6 py-4 pr-12 rounded-2xl border-2 bg-white/5 backdrop-blur-xl text-white placeholder-gray-400 focus:outline-none shadow-lg transition-all duration-300 focus:shadow-xl"
-                style={{
-                  borderColor: 'rgba(253, 200, 32, 0.3)',
-                  '&:focus': {
-                    borderColor: '#fdc820',
-                    boxShadow: '0 0 20px rgba(253, 200, 32, 0.2)'
-                  }
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#fdc820';
-                  e.target.style.boxShadow = '0 0 20px rgba(253, 200, 32, 0.2)';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = 'rgba(253, 200, 32, 0.3)';
-                  e.target.style.boxShadow = 'none';
-                }}
-              />
+  ref={inputRef}
+  type="text"
+  value={input}
+  onChange={(e) => setInput(e.target.value)}
+  placeholder="Ask me about heavy machinery..."
+  className="
+    w-full px-6 py-4 pr-12 rounded-2xl border-2 
+    bg-white/5 backdrop-blur-xl text-white placeholder-gray-400 
+    focus:outline-none shadow-lg transition-all duration-300 
+    focus:shadow-xl
+    border-[rgba(253,200,32,0.3)] 
+    focus:border-[#fdc820] 
+    focus:shadow-[0_0_20px_rgba(253,200,32,0.2)]
+  "
+/>
             </div>
             <motion.button
               whileHover={{ 
