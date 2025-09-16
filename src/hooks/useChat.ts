@@ -16,6 +16,7 @@ interface ChatResponse {
   summary?: string
   unServicable?: boolean
   userEmail?: string
+  leadContext?:object
 }
 
 export function useChat() {
@@ -24,7 +25,7 @@ export function useChat() {
   const [isLoading, setIsLoading] = useState(false)
   const [sessionId, setSessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`)
   const [isChatCompleted, setIsChatCompleted] = useState(false)
-  
+  const [chatContext,setChatContext]= useState({})
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -96,6 +97,7 @@ export function useChat() {
         body: JSON.stringify({
           message: input,
           sessionId: sessionId,
+          leadContext:chatContext
         }),
       })
 
@@ -114,6 +116,7 @@ export function useChat() {
       }
 
       setMessages(prev => [...prev, botMessage])
+      setChatContext(data.leadContext || {})
 
       // Handle completion or unserviceable requests
       if (data.isQueryCompleted && data.summary && data.userEmail) {
