@@ -116,7 +116,10 @@ export function useChat() {
       }
 
       setMessages(prev => [...prev, botMessage])
-      setChatContext(data.leadContext || {})
+      setChatContext(prev => ({
+  ...prev,
+  ...data.leadContext
+}));
 
       // Handle completion or unserviceable requests
       if (data.isQueryCompleted && data.summary && data.userEmail) {
