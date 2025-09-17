@@ -4,30 +4,25 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 // Initialize Google Generative AI
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || '');
 
-// Store conversation history (in production, use a database)
-const conversationHistory: { [sessionId: string]: Array<{ user: string; agent: string }> } = {};
-
 export async function POST(request: NextRequest) {
   try {
-    const { message, sessionId = "default" , leadContext={} } = await request.json();
+    const { message, sessionId = "default", leadContext = {}, messageHistory = [] } = await request.json();
 
     if (!message) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 });
     }
 
-    // Initialize conversation history for this session if it doesn't exist
-    if (!conversationHistory[sessionId]) {
-      conversationHistory[sessionId] = [];
-    }
+    // console.log("session", sessionId);
+    // console.log("leadContext received:", JSON.stringify(leadContext, null, 2));
+    // console.log("messageHistory length:", messageHistory.length);
 
-    console.log("session", sessionId);
-
-    // Get current conversation history
-    const history = conversationHistory[sessionId]
-      .map(entry => `User: ${entry.user}\nAgent: ${entry.agent}`)
+    // Build history from the messageHistory sent from frontend instead of server memory
+    const history = messageHistory
+      .filter((msg: any) => msg.sender) // Only include messages with sender info
+      .map((msg: any) => `${msg.sender === 'user' ? 'User' : 'Agent'}: ${msg.content}`)
       .join('\n\n');
 
-    console.log("History:", history,"====leadContext=====",leadContext);
+    // console.log("History built from frontend:", history.substring(0, 200));
 
     // Get the model
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
@@ -193,43 +188,28 @@ Bot: {
   }
 }
 
----
-
 USER MESSAGE: ${message}  
 PREVIOUS CHAT CONTEXT: ${history || "No previous conversation"}  
-CURRENT LEAD CONTEXT: ${leadContext}
-
+CURRENT LEAD CONTEXT: ${JSON.stringify(leadContext, null, 2)}
 `;
-
-
 
     // Generate response
     const result = await model.generateContent(prompt);
     const response = result.response.text();
 
-    // Parse the response to get the agent's message
+    // Parse the response
     let agentMessage = response;
     let parsedResponse = null;
     try {
-      // Remove markdown code blocks if present
       const cleanResponse = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       parsedResponse = JSON.parse(cleanResponse);
       agentMessage = parsedResponse.message || response;
 
-      // Log the AI response in object format
-      console.log("AI Response Object:", JSON.stringify(parsedResponse, null, 2));
+      // console.log("AI Response Object:", JSON.stringify(parsedResponse, null, 2));
     } catch (error) {
-      // If parsing fails, use the raw response
       console.log("Failed to parse response as JSON, using raw response");
-      console.log("Raw AI Response:", response);
     }
 
-    // Save this conversation to history
-    conversationHistory[sessionId].push({
-      user: message,
-      agent: agentMessage
-    });
-    console.log("parsed response",parsedResponse)
     return NextResponse.json({ 
       response: agentMessage,
       parsedResponse,
@@ -238,9 +218,8 @@ CURRENT LEAD CONTEXT: ${leadContext}
         summary: parsedResponse.summary,
         unServicable: parsedResponse.unServicable,
         userEmail: parsedResponse.userEmail,
-        leadContext:parsedResponse.leadContext
+        leadContext: parsedResponse.leadContext
       })
-
     });
   } catch (error) {
     console.error("Error:", error);
