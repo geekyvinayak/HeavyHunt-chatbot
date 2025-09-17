@@ -229,9 +229,10 @@ CURRENT LEAD CONTEXT: ${leadContext}
       user: message,
       agent: agentMessage
     });
-
+    console.log("parsed response",parsedResponse)
     return NextResponse.json({ 
       response: agentMessage,
+      parsedResponse,
       ...(parsedResponse && {
         isQueryCompleted: parsedResponse.isQueryCompleted,
         summary: parsedResponse.summary,
@@ -239,6 +240,7 @@ CURRENT LEAD CONTEXT: ${leadContext}
         userEmail: parsedResponse.userEmail,
         leadContext:parsedResponse.leadContext
       })
+
     });
   } catch (error) {
     console.error("Error:", error);

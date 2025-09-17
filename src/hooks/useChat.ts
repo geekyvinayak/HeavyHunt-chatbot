@@ -11,12 +11,12 @@ interface Message {
 }
 
 interface ChatResponse {
-  response: string
-  isQueryCompleted?: boolean
-  summary?: string
-  unServicable?: boolean
-  userEmail?: string
-  leadContext?:object
+  response: string;
+  isQueryCompleted: boolean; // keep it required, defaults handled in code
+  summary?: string;
+  unserviceable?: boolean; // fixed spelling
+  userEmail?: string;
+  leadContext?: Record<string, any>; // or a specific type if known
 }
 
 export function useChat() {
@@ -106,7 +106,7 @@ export function useChat() {
       }
 
       const data: ChatResponse = await response.json()
-
+      console.log("api response",data)
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         content: data.response,
