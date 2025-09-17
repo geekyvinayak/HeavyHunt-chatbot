@@ -106,7 +106,7 @@ export function useChat() {
       }
 
       const data: ChatResponse = await response.json()
-
+      console.log("api response",data)
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         content: data.response,
