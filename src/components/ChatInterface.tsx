@@ -138,7 +138,7 @@ export default function ChatInterface() {
             className="text-gray-300 text-center mt-2 max-w-md text-lg font-medium"
           >
             Tell me what type of heavy machinery you need or select an option below.
-            session ID:{sessionId}
+            2222session ID:{sessionId}
           </motion.p>
         </div>
 
