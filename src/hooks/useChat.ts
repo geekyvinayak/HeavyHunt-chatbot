@@ -165,5 +165,7 @@ export function useChat() {
     handleSubmit,
     isChatCompleted,
     startNewChat,
+    sessionId,
+    chatContext
   }
 }

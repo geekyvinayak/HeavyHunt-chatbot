@@ -24,7 +24,9 @@ export default function ChatInterface() {
     inputRef,
     handleSubmit,
     isChatCompleted,
-    startNewChat
+    startNewChat,
+    sessionId,
+    chatContext
   } = useChat();
 
   const [mounted, setMounted] = useState(false);
@@ -86,6 +88,8 @@ export default function ChatInterface() {
     },
   ];
 
+  console.log("leaddddd",chatContext)
+
   return (
     <div className="flex items-center p-2 justify-center h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white chatbot-container relative overflow-hidden">
       {/* Static background elements */}
@@ -134,6 +138,7 @@ export default function ChatInterface() {
             className="text-gray-300 text-center mt-2 max-w-md text-lg font-medium"
           >
             Tell me what type of heavy machinery you need or select an option below.
+            session ID:{sessionId}
           </motion.p>
         </div>
 

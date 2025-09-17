@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       .map(entry => `User: ${entry.user}\nAgent: ${entry.agent}`)
       .join('\n\n');
 
-    console.log("History:", history);
+    console.log("History:", history,"====leadContext=====",leadContext);
 
     // Get the model
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
