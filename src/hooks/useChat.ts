@@ -11,12 +11,12 @@ interface Message {
 }
 
 interface ChatResponse {
-  response: string;
-  isQueryCompleted: boolean; // keep it required, defaults handled in code
-  summary?: string;
-  unserviceable?: boolean; // fixed spelling
-  userEmail?: string;
-  leadContext?: Record<string, any>; // or a specific type if known
+  response: string
+  isQueryCompleted?: boolean
+  summary?: string
+  unServicable?: boolean
+  userEmail?: string
+  leadContext?:object
 }
 
 export function useChat() {
@@ -68,6 +68,7 @@ export function useChat() {
     setInput('')
     setIsChatCompleted(false)
     setIsLoading(false)
+    setChatContext({})
     setSessionId(`session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`)
     inputRef.current?.focus()
   }
@@ -89,16 +90,27 @@ export function useChat() {
     setIsLoading(true)
 
     try {
+      // Send the entire message history and current context to API
+      const requestBody = {
+        message: input,
+        sessionId: sessionId,
+        leadContext: chatContext,
+        messageHistory: [...messages, userMessage] // Send complete message history
+      };
+
+      console.log("Sending to API:", {
+        message: input,
+        sessionId,
+        leadContextKeys: Object.keys(chatContext),
+        messageCount: requestBody.messageHistory.length
+      });
+
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          message: input,
-          sessionId: sessionId,
-          leadContext:chatContext
-        }),
+        body: JSON.stringify(requestBody),
       })
 
       if (!response.ok) {
@@ -106,7 +118,13 @@ export function useChat() {
       }
 
       const data: ChatResponse = await response.json()
-      console.log("api response",data)
+      console.log("API response received:", {
+        hasResponse: !!data.response,
+        hasLeadContext: !!data.leadContext,
+        leadContextKeys: data.leadContext ? Object.keys(data.leadContext) : [],
+        isCompleted: data.isQueryCompleted
+      });
+
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         content: data.response,
@@ -116,24 +134,16 @@ export function useChat() {
       }
 
       setMessages(prev => [...prev, botMessage])
-      setChatContext(prev => ({
-  ...prev,
-  ...data.leadContext
-}));
+
+      // Update context - this should preserve all existing fields
+      if (data.leadContext) {
+        setChatContext(data.leadContext); // Use the complete context from API response
+        console.log("Context updated:", data.leadContext);
+      }
 
       // Handle completion or unserviceable requests
       if (data.isQueryCompleted && data.summary && data.userEmail) {
         setTimeout(() => {
-          // const summaryMessage: Message = {
-          //   id: (Date.now() + 2).toString(),
-          //   content: `📋 **Summary of your request:**\n${data.summary}`,
-          //   sender: 'bot',
-          //   isUser: false,
-          //   timestamp: new Date(),
-          // }
-          // setMessages(prev => [...prev, summaryMessage])
-
-          // Save to database and mark chat as completed
           saveQueryToDatabase(data.userEmail!, data.summary!)
           setIsChatCompleted(true)
         }, 1000)
