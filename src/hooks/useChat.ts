@@ -49,11 +49,12 @@ export function useChat() {
         body: JSON.stringify({
           user_email: email,
           querySummary: summary,
+          leadContext: chatContext, // Include the lead context for email templates
         }),
       })
 
       if (response.ok) {
-        console.log('Query saved successfully to database')
+        console.log('Query saved successfully to database and emails sent')
       } else {
         console.error('Failed to save query to database')
       }
