@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       Limit?: number;
       ExclusiveStartKey?: Record<string, any>;
     } = {
-      TableName: process.env.DYNAMODB_TABLE_NAME || 'UsersQueries',
+      TableName: process.env.DYNAMODB_TABLE_NAME || 'UserLeads',
     };
 
     // Add limit if provided
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
       ExpressionAttributeNames?: Record<string, string>;
       Limit?: number;
     } = {
-      TableName: process.env.DYNAMODB_TABLE_NAME || 'UsersQueries',
+      TableName: process.env.DYNAMODB_TABLE_NAME || 'UserLeads',
     };
 
     // Add filters if provided

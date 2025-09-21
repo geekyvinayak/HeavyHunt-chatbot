@@ -39,7 +39,7 @@ export function useChat() {
   }, [messages])
 
   // Function to save query to database
-  const saveQueryToDatabase = async (email: string, summary: string) => {
+  const saveQueryToDatabase = async (email: string, summary: string, sessionId: string) => {
     try {
       const response = await fetch('/api/save-query', {
         method: 'POST',
@@ -50,6 +50,7 @@ export function useChat() {
           user_email: email,
           querySummary: summary,
           leadContext: chatContext, // Include the lead context for email templates
+          sessionId: sessionId
         }),
       })
 
@@ -145,7 +146,7 @@ export function useChat() {
       // Handle completion or unserviceable requests
       if (data.isQueryCompleted && data.summary && data.userEmail) {
         setTimeout(() => {
-          saveQueryToDatabase(data.userEmail!, data.summary!)
+          saveQueryToDatabase(data.userEmail!, data.summary!,sessionId.split("_")[1])
           setIsChatCompleted(true)
         }, 1000)
       }

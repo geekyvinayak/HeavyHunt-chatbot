@@ -15,7 +15,7 @@ const docClient = DynamoDBDocumentClient.from(client);
 
 export async function POST(request: NextRequest) {
   try {
-    const { user_email, querySummary, leadContext } = await request.json();
+    const { user_email, querySummary, leadContext , sessionId} = await request.json();
 
     // Validate required fields
     if (!user_email || !querySummary) {
@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
       user_email,
       querySummary,
       leadContext: leadContext || {},
+      sessionId,
       timestamp: new Date().toISOString(),
       createdAt: Date.now(),
     };
@@ -47,7 +48,7 @@ export async function POST(request: NextRequest) {
 
     // Send email notifications
     try {
-      await sendEmailNotifications(user_email, querySummary, leadContext || {});
+      await sendEmailNotifications(user_email, querySummary, leadContext || {}, sessionId);
     } catch (emailError) {
       console.error('Error sending email notifications:', emailError);
       // Don't fail the entire request if email fails
@@ -73,11 +74,12 @@ export async function POST(request: NextRequest) {
 }
 
 // Function to send email notifications
-async function sendEmailNotifications(userEmail: string, querySummary: string, leadContext: any) {
+async function sendEmailNotifications(userEmail: string, querySummary: string, leadContext: any, sessionId: string) {
   const emailData = {
     userEmail,
     leadSummary: querySummary,
-    leadContext
+    leadContext,
+    sessionId
   };
 
   // Send user confirmation email (only if enabled)

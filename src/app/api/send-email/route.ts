@@ -22,11 +22,11 @@ interface LeadNotificationData {
     source?: string;
     delivery?: string;
     budget?: string;
-    firstName?: string;
-    lastName?: string;
+    name?: string;
     email?: string;
     phone?: string;
   };
+  sessionId: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -105,8 +105,8 @@ export async function POST(request: NextRequest) {
 
 // Generate user confirmation email
 async function generateUserConfirmationEmail(data: LeadNotificationData): Promise<EmailData> {
-  const { userEmail, leadContext, leadSummary } = data;
-  const firstName = leadContext.firstName || 'Valued Customer';
+  const { userEmail, leadContext, leadSummary, sessionId } = data;
+  const firstName = leadContext.name || 'Valued Customer';
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -138,8 +138,8 @@ async function generateUserConfirmationEmail(data: LeadNotificationData): Promis
         <div class="content">
           <h2>Thank you for your inquiry, ${firstName}!</h2>
           
-          <p>We've received your heavy machinery request and our team is already working on finding the perfect solution for you.</p>
-          
+          <p>We've received your heavy machinery request  and our team is already working on finding the perfect solution for you.</p>
+          <p>Ref no for this conversation: ${sessionId}</p>
           <div class="summary-box">
             <h3>📋 Your Inquiry Summary</h3>
             <div class="detail-row">
@@ -236,7 +236,7 @@ async function generateAdminNotificationEmail(data: LeadNotificationData): Promi
             <h3>👤 Customer Information</h3>
             <div class="detail-row">
               <span class="detail-label">Name:</span>
-              <span class="detail-value">${leadContext.firstName || 'Not provided'} ${leadContext.lastName || ''}</span>
+              <span class="detail-value">${leadContext.name || 'Not provided'}</span>
             </div>
             <div class="detail-row">
               <span class="detail-label">Email:</span>
@@ -291,7 +291,7 @@ async function generateAdminNotificationEmail(data: LeadNotificationData): Promi
 
   return {
     to: adminEmail,
-    subject: `🚨 New Lead: ${leadContext.machineType || 'Machinery'} Inquiry from ${leadContext.firstName || 'Customer'}`,
+    subject: `🚨 New Lead: ${leadContext.machineType || 'Machinery'} Inquiry from ${leadContext.name || 'Customer'}`,
     htmlContent,
     fromEmail: process.env.MANDRILL_FROM_EMAIL || 'noreply@heavyhunt.com',
     fromName: 'HeavyHunt Lead System'

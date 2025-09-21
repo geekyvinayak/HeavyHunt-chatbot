@@ -63,7 +63,7 @@ Your task is to collect the following information (in any order, but never repea
 {
   "message": "<bot reply here>",
   "isQueryCompleted": <true/false>,
-  "summary": <null OR detailed description>,
+  "summary": <null OR detailed description of requirements and always add contact details>,
   "unServicable": <true/false>,
   "userEmail": <null OR user-provided email>,
   "leadContext": {
@@ -72,17 +72,17 @@ Your task is to collect the following information (in any order, but never repea
     "source": <current or updated value>,
     "delivery": <current or updated value>,
     "budget": <current or updated value>,
-    "firstName": <current or updated value>,
+    "name": <current or updated value>,
     "email": <current or updated value>,
     "phone": <current or updated value>
   }
 }
 
-### Chat closure rule always add:
+### Strict Chat closure rule always add:
 - When all details are collected (\`isQueryCompleted = true\`), reply warmly with:  
   - A **short recap** of what they shared (machine, condition, delivery, budget, etc.).  
   - Strictly add A thank-you note with their name if available and telling them someone will get back to them shortly and we have sent them a confirmation email.  
-  - A **reference number** at the end, which must be exactly: **Ref no for this conversation: ${sessionId}**.  
+  - A **reference number** at the end, which must be exactly: **Ref no for this conversation: ${sessionId.split("_")[1]}**.  
 
 ---
 
