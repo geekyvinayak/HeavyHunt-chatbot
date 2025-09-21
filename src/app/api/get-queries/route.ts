@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
       return aCreatedAt - bCreatedAt; // Ascending order
     });
 
-    console.log(`Retrieved ${sortedItems.length} queries from DynamoDB (sorted by date)`);
+  
 
     // Prepare response
     const response: {
@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
       return aCreatedAt - bCreatedAt; // Ascending order
     });
 
-    console.log(`Retrieved ${sortedItems.length} filtered queries from DynamoDB (sorted by date)`);
+
 
     return NextResponse.json({
       success: true,

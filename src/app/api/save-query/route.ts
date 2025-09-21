@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
 
     await docClient.send(command);
 
-    console.log('Successfully saved query to DynamoDB:', item.id);
+   
 
     // Send email notifications
     try {
@@ -101,7 +101,7 @@ async function sendEmailNotifications(userEmail: string, querySummary: string, l
       if (userEmailResponse.ok) {
         console.log('User confirmation email sent successfully');
       } else {
-        console.error('Failed to send user confirmation email');
+        console.error('Failed to send user confirmation email,JSON:',JSON.stringify(userEmailResponse));
       }
     } catch (error) {
       console.error('Error sending user confirmation email:', error);

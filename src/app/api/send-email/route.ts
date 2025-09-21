@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    console.log('Email sent successfully:', result);
+
 
     // Handle the result properly - it could be an array or error
     const messageId = Array.isArray(result) && result.length > 0 ? (result[0] as any)?._id || (result[0] as any)?.message_id : 'unknown';
@@ -138,8 +138,13 @@ async function generateUserConfirmationEmail(data: LeadNotificationData): Promis
         <div class="content">
           <h2>Thank you for your inquiry, ${firstName}!</h2>
           
-          <p>We've received your heavy machinery request  and our team is already working on finding the perfect solution for you.</p>
-          <p>Ref no for this conversation: ${sessionId}</p>
+          <p>We've received your heavy machinery request and our team is already working on finding the perfect solution for you.</p>
+          
+          <div class="summary-box" style="background: #e8f4fd; border-left-color: #2196f3; margin: 20px 0;">
+            <h3 style="color: #1976d2; margin: 0 0 10px 0;">📋 Reference Information</h3>
+            <p style="font-size: 16px; font-weight: bold; color: #1976d2; margin: 0;">Reference: ${sessionId}</p>
+            <p style="font-size: 14px; color: #666; margin: 5px 0 0 0;">Keep this reference number for your records</p>
+          </div>
           <div class="summary-box">
             <h3>📋 Your Inquiry Summary</h3>
             <div class="detail-row">
@@ -173,7 +178,8 @@ async function generateUserConfirmationEmail(data: LeadNotificationData): Promis
           </ul>
           
           <div style="text-align: center;">
-            <a href="mailto:info@heavyhunt.com" class="cta-button">Contact Our Team</a>
+            <a href="mailto:info@heavyhunt.com" class="cta-button" style="margin-right: 10px;">Contact Our Team</a>
+            <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/user?email=${userEmail}" class="cta-button" style="background: #2196f3; color: white;">View My Inquiries</a>
           </div>
         </div>
         

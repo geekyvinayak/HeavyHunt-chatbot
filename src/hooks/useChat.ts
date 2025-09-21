@@ -100,12 +100,6 @@ export function useChat() {
         messageHistory: [...messages, userMessage] // Send complete message history
       };
 
-      // console.log("Sending to API:", {
-      //   message: input,
-      //   sessionId,
-      //   leadContextKeys: Object.keys(chatContext),
-      //   messageCount: requestBody.messageHistory.length
-      // });
 
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -120,13 +114,7 @@ export function useChat() {
       }
 
       const data: ChatResponse = await response.json()
-      // console.log("API response received:", {
-      //   hasResponse: !!data.response,
-      //   hasLeadContext: !!data.leadContext,
-      //   leadContextKeys: data.leadContext ? Object.keys(data.leadContext) : [],
-      //   isCompleted: data.isQueryCompleted
-      // });
-
+  
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         content: data.response,
@@ -140,7 +128,6 @@ export function useChat() {
       // Update context - this should preserve all existing fields
       if (data.leadContext) {
         setChatContext(data.leadContext); // Use the complete context from API response
-        console.log("Context updated:", data.leadContext);
       }
 
       // Handle completion or unserviceable requests

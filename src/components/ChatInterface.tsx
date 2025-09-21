@@ -88,7 +88,7 @@ export default function ChatInterface() {
     },
   ];
 
-  console.log("leaddddd",chatContext)
+
 
   return (
     <div className="flex items-center p-2 justify-center h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white chatbot-container relative overflow-hidden">
@@ -204,20 +204,43 @@ export default function ChatInterface() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.8, duration: 0.5 }}
-            className="flex justify-center"
+            className="flex flex-col items-center gap-4"
           >
-            <motion.button
-              whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(253, 200, 32, 0.4)' }}
-              whileTap={{ scale: 0.95 }}
-              onClick={startNewChat}
-              className="px-8 py-4 rounded-2xl text-black font-bold shadow-2xl border-2 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl"
-              style={{
-                background: `linear-gradient(135deg, #fdc820 0%, #ffdd44 100%)`,
-                borderColor: '#fdc820'
-              }}
-            >
-              🔄 Start New Chat
-            </motion.button>
+            <div className="flex gap-4">
+              <motion.button
+                whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(253, 200, 32, 0.4)' }}
+                whileTap={{ scale: 0.95 }}
+                onClick={startNewChat}
+                className="px-8 py-4 rounded-2xl text-black font-bold shadow-2xl border-2 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl"
+                style={{
+                  background: `linear-gradient(135deg, #fdc820 0%, #ffdd44 100%)`,
+                  borderColor: '#fdc820'
+                }}
+              >
+                🔄 Start New Chat
+              </motion.button>
+              
+              {(chatContext as any)?.email && (
+                <motion.a
+                  whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(59, 130, 246, 0.4)' }}
+                  whileTap={{ scale: 0.95 }}
+                  href={`/user?email=${encodeURIComponent((chatContext as any).email)}`}
+                  className="px-8 py-4 rounded-2xl text-white font-bold shadow-2xl border-2 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl"
+                  style={{
+                    background: `linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)`,
+                    borderColor: '#3b82f6'
+                  }}
+                >
+                  📋 View My Inquiries
+                </motion.a>
+              )}
+            </div>
+            
+            {(chatContext as any)?.email && (
+              <p className="text-sm text-gray-300 text-center max-w-md">
+                You can also view all your inquiries anytime using your email: <span className="font-mono bg-gray-800 px-2 py-1 rounded">{(chatContext as any).email}</span>
+              </p>
+            )}
           </motion.div>
         ) : (
           // Show normal input form when chat is active

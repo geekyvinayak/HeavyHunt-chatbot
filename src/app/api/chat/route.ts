@@ -12,9 +12,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 });
     }
 
-    // console.log("session", sessionId);
-    // console.log("leadContext received:", JSON.stringify(leadContext, null, 2));
-    // console.log("messageHistory length:", messageHistory.length);
 
     // Build history from the messageHistory sent from frontend instead of server memory
     const history = messageHistory
@@ -22,7 +19,7 @@ export async function POST(request: NextRequest) {
       .map((msg: any) => `${msg.sender === 'user' ? 'User' : 'Agent'}: ${msg.content}`)
       .join('\n\n');
 
-    // console.log("History built from frontend:", history.substring(0, 200));
+   
 
     // Get the model
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
@@ -103,7 +100,7 @@ CURRENT LEAD CONTEXT: ${JSON.stringify(leadContext, null, 2)}
       parsedResponse = JSON.parse(cleanResponse);
       agentMessage = parsedResponse.message || response;
 
-      // console.log("AI Response Object:", JSON.stringify(parsedResponse, null, 2));
+    
     } catch (error) {
       console.log("Failed to parse response as JSON, using raw response");
     }
