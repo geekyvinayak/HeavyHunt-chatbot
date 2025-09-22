@@ -8,6 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Loader2, Search, RefreshCw, Mail, Calendar, Wrench, AlertCircle } from 'lucide-react';
 import Image from 'next/image';
 
+export const dynamic = 'force-dynamic'; 
+
 interface UserQuery {
   id: string;
   user_email: string;
@@ -44,6 +46,7 @@ export default function UserPanel() {
 
   // Get email from URL parameters
   useEffect(() => {
+    if (typeof window === "undefined") return; // prevent SSR issues
     const emailParam = searchParams.get('email');
     if (emailParam) {
       setEmail(emailParam);
