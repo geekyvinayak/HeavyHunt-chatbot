@@ -10,9 +10,8 @@ export default function Header() {
           <a className="hover:text-white" href="#search">Search</a>
           <a className="hover:text-white" href="#deals">Live Deals</a>
           <a className="hover:text-white" href="#how">How it works</a>
-          <a className="hover:text-white" href="#pricing">Pricing</a>
         </nav>
-        <button className="hidden md:inline-flex rounded-xl px-4 py-2 bg-yellow-300 text-black font-medium hover:bg-yellow-200 transition">Sign in</button>
+        <button className="hidden md:inline-flex rounded-xl px-4 py-2 bg-[#fdc820] text-black font-medium hover:bg-yellow-200 transition">Sign in</button>
       </div>
     </header>
   );

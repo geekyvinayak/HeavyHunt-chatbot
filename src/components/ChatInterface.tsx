@@ -10,6 +10,7 @@ import TypingIndicator from '@/components/TypingIndicator';
 import FeatureCard from '@/components/FeatureCard';
 import { useChat } from '@/hooks/useChat';
 import Image from 'next/image';
+import { usePrompt } from '@/app/PromptContext';
 
 export default function ChatInterface() {
   const {
@@ -31,11 +32,14 @@ export default function ChatInterface() {
 
   const [mounted, setMounted] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
-
+  console.log("ENV",process.env.NEXT_PUBLIC_BASE_URL)
+  console.log("Client env:", process.env); 
+  const { prompt } = usePrompt();
   // Set mounted state after initial render
   useEffect(() => {
     setMounted(true);
-  }, []);
+    if(prompt) handleCardClick(prompt)
+  }, [prompt]);
 
   const hasMessages = messages.length > 0;
 

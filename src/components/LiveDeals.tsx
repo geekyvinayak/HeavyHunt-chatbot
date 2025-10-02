@@ -46,7 +46,7 @@ export default function LiveDeals() {
               ))}
             </ul>
             <div className="mt-4 flex gap-2">
-              <button className="flex-1 rounded-xl bg-yellow-300 text-black font-semibold px-3 py-2 hover:bg-yellow-200">Contact seller</button>
+              <button className="flex-1 rounded-xl bg-[#fdc820] text-black font-semibold px-3 py-2 hover:bg-yellow-200">Contact seller</button>
               <button className="rounded-xl border border-white/15 px-3 py-2 text-white/90 hover:bg-white/5">Deal sheet</button>
               <button className="rounded-xl border border-white/15 px-3 py-2 text-white/90 hover:bg-white/5">Save</button>
             </div>

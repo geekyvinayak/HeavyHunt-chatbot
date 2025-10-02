@@ -1,20 +1,50 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { usePrompt } from '@/app/PromptContext';
+
 
 export default function Search() {
+  const router = useRouter();
   const [advanced, setAdvanced] = useState(false);
-  const [prompt, setPrompt] = useState(
-    "Find all used Kobelco SK140 excavators, 2018–2022, under 3,000 hours, near 79936 for under $135k"
-  );
+  const { setPrompt: setGlobalPrompt } = usePrompt();
+  const [advancedFields, setAdvancedFields] = useState({
+    machineType: 'Excavator',
+    machineCondition: 'Used',
+    source: 'Dealer',
+    expectedDelivery: '1 month',
+    budget: '$50k–$150k',
+    intendedUse: 'Rental',
+  });
 
-  const chips = [
-    { label: "Make/Model", value: "Kobelco SK140" },
-    { label: "Years", value: "2018–2022" },
-    { label: "Max Hours", value: "≤ 3,000" },
-    { label: "ZIP", value: "79936" },
-    { label: "Budget", value: "≤ $135k" },
-  ];
+  const fieldLabels: Record<keyof typeof advancedFields, string> = {
+    machineType: 'Type',
+    machineCondition: 'Condition',
+    source: 'Source',
+    expectedDelivery: 'Expected Delivery',
+    budget: 'Budget',
+    intendedUse: 'Intended Use',
+  };
+
+  const [prompt, setPrompt] = useState('Find all used');
+
+  useEffect(() => {
+    const advancedText = Object.entries(advancedFields)
+      .map(([key, value]) => `${fieldLabels[key as keyof typeof advancedFields]}: ${value}`)
+      .join(', ');
+
+    setPrompt(`Find all used, ${advancedText}`);
+  }, [advancedFields]);
+
+  const handleAdvancedChange = (key: keyof typeof advancedFields, value: string) => {
+    setAdvancedFields((prev) => ({ ...prev, [key]: value }));
+  };
+
+ const handleSearch = () => {
+  setGlobalPrompt(prompt); // save prompt in context
+  router.push('/chat');    // navigate normally
+};
 
   return (
     <section id="search" className="mx-auto max-w-5xl px-4">
@@ -25,40 +55,48 @@ export default function Search() {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             className="flex-1 rounded-2xl bg-black/40 border border-white/10 px-4 py-3 outline-none focus:ring-2 focus:ring-yellow-300/60"
-            placeholder="Tell the broker your make/model, year range, hours cap, ZIP, and budget"
+            placeholder="Tell the broker your details"
           />
-          <button className="rounded-2xl px-5 py-3 bg-yellow-300 text-black font-semibold hover:bg-yellow-200 transition">Search</button>
-        </div>
-
-        {/* Chips */}
-        <div className="mt-3 flex flex-wrap gap-2">
-          {chips.map((c, i) => (
-            <span key={i} className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/30 px-3 py-1 text-xs text-white/85">
-              <span className="text-white/60">{c.label}:</span> {c.value}
-            </span>
-          ))}
-          <button className="text-xs underline text-white/70 hover:text-white" onClick={() => setAdvanced((v) => !v)}>
-            {advanced ? "Hide AI Broker Elite" : "Open AI Broker Elite"}
+          <button
+            onClick={handleSearch}
+            className="rounded-2xl px-5 py-3 bg-[#fdc820] text-black font-semibold hover:bg-yellow-200 transition"
+          >
+            Search
           </button>
         </div>
 
-        {/* Advanced panel */}
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button
+            className="text-xs underline text-white/70 hover:text-white"
+            onClick={() => setAdvanced((v) => !v)}
+          >
+            {advanced ? 'Hide AI Broker Elite' : 'Open AI Broker Elite'}
+          </button>
+        </div>
+
         {advanced && (
           <div className="mt-4 grid md:grid-cols-3 gap-3">
             {[
-              { label: "Intended use", placeholder: "light construction / rental / export" },
-              { label: "Attachments", placeholder: "thumb, QC, aux hyd., U/C %" },
-              { label: "Emissions / export", placeholder: "Tier 4 Final, CE, MX/CO ready" },
-              { label: "Budget", placeholder: "$110k–$140k" },
-              { label: "Urgency", placeholder: "1–5" },
-              { label: "Ship to ZIP", placeholder: "79936" },
-              { label: "CRM tag", placeholder: "Contact Now / Save / Recheck 10 days" },
-            ].map((f, i) => (
-              <div key={i} className="flex flex-col">
-                <label className="text-xs text-white/60">{f.label}</label>
-                <input className="mt-1 rounded-xl bg-black/40 border border-white/10 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-yellow-300/50" placeholder={f.placeholder} />
-              </div>
-            ))}
+              { key: 'machineType', label: 'Machine Type', placeholder: 'Excavator / Bulldozer / Loader' },
+              { key: 'machineCondition', label: 'Condition', placeholder: 'New / Used / Refurbished' },
+              { key: 'source', label: 'Source', placeholder: 'Dealer / Owner / Auction / Export' },
+              { key: 'expectedDelivery', label: 'Expected Delivery', placeholder: '1–4 weeks, 1 month, ASAP' },
+              { key: 'budget', label: 'Budget', placeholder: '$50k–$150k' },
+              { key: 'intendedUse', label: 'Intended Use', placeholder: 'Construction / Rental / Export' },
+            ].map((f) => {
+              const fieldKey = f.key as keyof typeof advancedFields;
+              return (
+                <div key={fieldKey} className="flex flex-col">
+                  <label className="text-xs text-white/60">{f.label}</label>
+                  <input
+                    value={advancedFields[fieldKey]}
+                    onChange={(e) => handleAdvancedChange(fieldKey, e.target.value)}
+                    className="mt-1 rounded-xl bg-black/40 border border-white/10 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-yellow-300/50"
+                    placeholder={f.placeholder}
+                  />
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
